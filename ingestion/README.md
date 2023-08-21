@@ -86,5 +86,5 @@ docker build -t pinecone_openai_embeddings_generator .
 Run the Docker container with the necessary environment variables:
 
 ```bash
-docker run -e OPENAI_API_KEY=your-openai-api-key -e PINECONE_API_KEY=your-openai-api-key -e PINECONE_ENV=your-pinecone-environment -e PINECONE_INDEX_NAME=your-pinecone-index-name -v $(pwd)/data:/app/data pinecone_openai_embeddings_generator
+docker run -e OPENAI_API_KEY=your-openai-api-key -e PINECONE_API_KEY=your-pinecone-api-key -e PINECONE_ENV=your-pinecone-environment -e PINECONE_INDEX_NAME=your-pinecone-index-name -v $(pwd)/data:/app/data pinecone_openai_embeddings_generator
 ```

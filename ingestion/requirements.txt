@@ -1,0 +1,6 @@
+python-dotenv
+pinecone-client 
+openai 
+tiktoken 
+langchain
+unstructured

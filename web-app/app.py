@@ -75,12 +75,13 @@ def ask():
 
         if not question:
             return jsonify({"error": "Please enter your question."})
-        
+
         # Check for specific inputs and provide custom responses
         if question.lower() in ["thank you", "thanks", "thank you!"]:
             return jsonify({"answer": "You're welcome!"})
-        elif question.lower() in ["bye", "goodbye", "see you", "farewell"]:
-            return jsonify({"answer": "Goodbye! If you have more questions, feel free to ask."})
+
+        if question.lower() in ["bye", "exit", "stop", "end"]:
+            return jsonify({"answer": "Goodbye!"})
 
         ai_response = qa({"question": question})
         return jsonify({"answer": ai_response["answer"]})

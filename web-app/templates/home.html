@@ -121,70 +121,48 @@
           : "560px";
       });
 
-      // Fetch the chat history and insert it into the chat box
-      fetch("/history")
-        .then((response) => response.json())
-        .then((data) => {
-          data.forEach((message) => {
-            var p = document.createElement("p");
-            p.textContent = message.content;
-            p.className = message.role + "-message";
-            document.getElementById("chat").appendChild(p);
-          });
-        });
-
       // Handle the form submission
       document
         .getElementById("ask-form")
         .addEventListener("submit", function (event) {
           event.preventDefault();
           var question = document.getElementById("question").value;
-          document.getElementById("question").value = ""
+          document.getElementById("question").value = "";
 
           if (question.trim() === "") {
             return;
           } else {
-            if (
-              ["bye", "exit", "stop", "end"].includes(question.toLowerCase())
-            ) {
-              // Append the assistant's response to the chat box
-              var assistantMessage = document.createElement("p");
-              assistantMessage.textContent = "bye";
-              assistantMessage.className = "assistant-message";
-              document.getElementById("chat").appendChild(assistantMessage);
-            } else {
-              // Append the user's question to the chat box
-              var userMessage = document.createElement("p");
-              userMessage.textContent = question;
-              userMessage.className = "user-message";
-              document.getElementById("chat").appendChild(userMessage);
+            // Append the user's question to the chat box
+            var userMessage = document.createElement("p");
+            userMessage.textContent = question;
+            userMessage.className = "user-message";
+            document.getElementById("chat").appendChild(userMessage);
 
-              fetch("/ask", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ question: question }),
+            fetch("/ask", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ question: question }),
+            })
+              .then((response) => response.json())
+              .then((response) => {
+                // Append the assistant's response to the chat box
+                var assistantMessage = document.createElement("p");
+                assistantMessage.textContent = response.answer;
+                assistantMessage.className = "assistant-message";
+                document.getElementById("chat").appendChild(assistantMessage);
               })
-                .then((response) => response.json())
-                .then((response) => {
-                  // Append the assistant's response to the chat box
-                  var assistantMessage = document.createElement("p");
-                  assistantMessage.textContent = response.answer;
-                  assistantMessage.className = "assistant-message";
-                  document.getElementById("chat").appendChild(assistantMessage);
-                })
-                .catch((error) => {
-                  // Handle any exceptions that occurred during fetch process
-                  console.error("An error occurred during fetch:", error);
+              .catch((error) => {
+                // Handle any exceptions that occurred during fetch process
+                console.error("An error occurred during fetch:", error);
 
-                  // Append the assistant's response to the chat box
-                  var assistantMessage = document.createElement("p");
-                  assistantMessage.textContent = "An error occurred";
-                  assistantMessage.className = "assistant-message";
-                  document.getElementById("chat").appendChild(assistantMessage);
-                });
-            }
+                // Append the assistant's response to the chat box
+                var assistantMessage = document.createElement("p");
+                assistantMessage.textContent = "An error occurred";
+                assistantMessage.className = "assistant-message";
+                document.getElementById("chat").appendChild(assistantMessage);
+              });
           }
         });
     </script>

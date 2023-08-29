@@ -9,6 +9,7 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.prompts.prompt import PromptTemplate
+from langchain.callbacks import get_openai_callback
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -82,9 +83,12 @@ def ask():
 
         if question.lower() in ["bye", "exit", "stop", "end"]:
             return jsonify({"answer": "Goodbye!"})
-
-        ai_response = qa({"question": question})
-        return jsonify({"answer": ai_response["answer"]})
+        
+        with get_openai_callback() as cb:
+            ai_response = qa({"question": question})
+            print(f'Total tokens spent: {cb.total_tokens} with a cost of {cb.total_cost}.')
+            return jsonify({"answer": ai_response["answer"]})
+        
     except Exception as e:
         logger.error(f"Failed to process question: {e}")
         return jsonify({"error": "An error occurred while processing your question."})

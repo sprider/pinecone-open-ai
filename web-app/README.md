@@ -58,7 +58,6 @@ OPENAI_API_KEY=your-openai-api-key
 PINECONE_API_KEY=your-pinecone-api-key
 PINECONE_ENV=your-pinecone-environment
 PINECONE_INDEX_NAME=your-pinecone-index-name
-LLM_MODEL=gpt-3.5-turbo
 ```
 
 Replace `your-openai-api-key`, `your-pinecone-api-key`, `your-pinecone-environment` and `your-pinecone-index-name` with your actual OpenAI API key, Pinecone API key, Pinecone Environment, and Pinecone Index Name.
@@ -84,7 +83,7 @@ docker build -t pinecone_openai_conversational_retrieval .
 Run the Docker container with the necessary environment variables:
 
 ```bash
-docker run -e OPENAI_API_KEY=your-openai-api-key -e PINECONE_API_KEY=your-pinecone-api-key -e PINECONE_ENV=your-pinecone-environment -e PINECONE_INDEX_NAME=your-pinecone-index-name -e LLM_MODEL=gpt-3.5-turbo -p 5000:5000 pinecone_openai_conversational_retrieval
+docker run -e OPENAI_API_KEY=your-openai-api-key -e PINECONE_API_KEY=your-pinecone-api-key -e PINECONE_ENV=your-pinecone-environment -e PINECONE_INDEX_NAME=your-pinecone-index-name -p 5000:5000 pinecone_openai_conversational_retrieval
 ```
 
 The app will be accessible at `http://localhost:5000`.

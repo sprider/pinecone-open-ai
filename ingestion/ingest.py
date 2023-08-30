@@ -23,15 +23,6 @@ if not all([open_api_key, pinecone_api_key, pinecone_env, pinecone_index_name]):
     logger.error("Missing required environment variables.")
     exit(1)
 
-def init_services():
-    try:
-        openai_embeddings = OpenAIEmbeddings(openai_api_key=open_api_key)
-        pinecone.init(api_key=pinecone_api_key, environment=pinecone_env)
-        return openai_embeddings
-    except Exception as e:
-        logger.error(f"Failed to initialize OpenAIEmbeddings or Pinecone: {e}")
-        exit(1)
-
 def load_docs(directory_path):
     try:
         loader = DirectoryLoader(directory_path)
@@ -52,14 +43,15 @@ def split_docs(documents, chunk_size=500, chunk_overlap=20):
         logger.error(f"Failed to split documents: {e}")
         return []
 
-def store_embeddings_in_pinecone(docs, openai_embeddings):
+def store_embeddings_in_pinecone(docs):
     try:
-        Pinecone.from_documents(docs, openai_embeddings, index_name=pinecone_index_name)
+        openai_embedding_model = OpenAIEmbeddings(openai_api_key=open_api_key)
+        pinecone.init(api_key=pinecone_api_key, environment=pinecone_env)
+        Pinecone.from_documents(docs, openai_embedding_model, index_name=pinecone_index_name)
     except Exception as e:
         logger.error(f"Failed to store embeddings in Pinecone: {e}")
 
 def main():
-    openai_embeddings = init_services()
     documents = load_docs("data/")
     if not documents:
         logger.error("No documents loaded.")
@@ -68,7 +60,7 @@ def main():
     if not docs:
         logger.error("No documents split.")
         exit(1)
-    store_embeddings_in_pinecone(docs, openai_embeddings)
+    store_embeddings_in_pinecone(docs)
 
 if __name__ == "__main__":
     main()

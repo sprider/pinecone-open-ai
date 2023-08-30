@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 app = Flask(__name__)
 
-llm_model = os.environ.get("LLM_MODEL")
 open_api_key = os.environ.get("OPENAI_API_KEY")
 pinecone_api_key = os.getenv("PINECONE_API_KEY")
 pinecone_env = os.getenv("PINECONE_ENV")
@@ -26,7 +25,7 @@ pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
 
 # Validate environment variables
 if not all(
-    [llm_model, open_api_key, pinecone_api_key, pinecone_env, pinecone_index_name]
+    [open_api_key, pinecone_api_key, pinecone_env, pinecone_index_name]
 ):
     logger.error("Missing required environment variables.")
     exit(1)
@@ -47,15 +46,15 @@ Standalone question:"""
 CUSTOM_QUESTION_PROMPT = PromptTemplate.from_template(custom_template)
 
 try:
-    llm = OpenAI(openai_api_key=open_api_key, temperature=0.7)
-    embeddings = OpenAIEmbeddings(openai_api_key=open_api_key)
+    openai_chat_llm = OpenAI(openai_api_key=open_api_key, temperature=0.7)
+    openai_embedding_model = OpenAIEmbeddings(openai_api_key=open_api_key)
     pinecone.init(api_key=pinecone_api_key, environment=pinecone_env)
-    vector_db = Pinecone.from_existing_index(pinecone_index_name, embeddings)
+    vector_db = Pinecone.from_existing_index(pinecone_index_name, openai_embedding_model)
     vector_db_retriever = vector_db.as_retriever()
     # We set "k": n to get the top n similar documents from pinecone index based on the question asked by the user.
     vector_db_retriever.search_kwargs = {"k": 5}
     qa = ConversationalRetrievalChain.from_llm(
-        llm=llm,
+        llm=openai_chat_llm,
         chain_type="stuff",
         retriever=vector_db_retriever,
         condense_question_prompt=CUSTOM_QUESTION_PROMPT,

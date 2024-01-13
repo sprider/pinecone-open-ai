@@ -2,10 +2,10 @@ import os
 import logging
 import pinecone
 from dotenv import load_dotenv
-from langchain.document_loaders import DirectoryLoader
+from langchain_community.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores.pinecone import Pinecone
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Pinecone
+from langchain_openai import OpenAIEmbeddings
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
